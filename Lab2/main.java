@@ -5,10 +5,12 @@ public static void clear() {
     System.out.print("\033[H\033[2J");
     System.out.flush();
 }
-void main() {
+void main() 
+{
     Scanner s = new Scanner(System.in);
     Show currentShow = null;
-    while(true) {
+    while(true) 
+    {
         int userOption;
         System.out.println("Select one of the following");
         System.out.println("'1' for Option 1");
@@ -21,13 +23,21 @@ void main() {
 
         if (userOption == 1) {
             currentShow = makeShowFile(s);
-        } else if (userOption == 2) {
+        } 
+        else if (userOption == 2) 
+        {
             currentShow = loadAndSellTicket(s);
-        } else if (userOption == 3) {
+        } 
+        else if (userOption == 3) 
+        {
             option3(s, currentShow);
-        } else if (userOption == 0) {
+        } 
+        else if (userOption == 0) 
+        {
             break;
-        } else {
+        } 
+        else 
+        {
             System.out.println("Invalid input, try again");
             try {
                 Thread.sleep(2000);
@@ -52,7 +62,8 @@ Show makeShowFile(Scanner s) {
     int numberOfTickets = s.nextInt();
     s.nextLine(); // Clear newline buffer
 
-    if (numberOfTickets >= 10 && numberOfTickets <= 300) {
+    if (numberOfTickets >= 10 && numberOfTickets <= 300) 
+    {
         Show thisShow = new Show(showName, artistName, venueName, numberOfTickets);
 
         // Create the file name (replaces spaces with underscores)
@@ -60,13 +71,17 @@ Show makeShowFile(Scanner s) {
         File showFile = new File(fileName);
 
         try {
-            if (showFile.createNewFile()) {
+            if (showFile.createNewFile()) 
+            {
                 System.out.println("File created: " + showFile.getName());
-            } else {
+            } 
+            else 
+            {
                 System.out.println("Overwriting existing file: " + showFile.getName());
             }
 
-            try (PrintWriter writer = new PrintWriter(new FileWriter(showFile))) {
+            try (PrintWriter writer = new PrintWriter(new FileWriter(showFile))) 
+            {
                 writer.println(thisShow.getShowName() + "," +
                         thisShow.getArtist() + "," +
                         thisShow.getVenue() + "," +
@@ -82,18 +97,21 @@ Show makeShowFile(Scanner s) {
             System.out.println("Show data successfully written to " + showFile.getAbsolutePath() + "\n");
             return thisShow;
 
-        } catch (IOException e) {
+        } catch (IOException e) 
+        {
             System.out.println("An error occurred while creating the file: " + e.getMessage() + "\n");
             return null;
         }
-    } else {
+    } else 
+    {
         System.out.println("Invalid input, must be between 10 and 300.\n");
         return null;
     }
 }
 
 
-Show loadAndSellTicket(Scanner s) {
+Show loadAndSellTicket(Scanner s)
+{
     Show loadedShow = loadShowFile(s);
     if (loadedShow == null) {
         return null;
@@ -102,9 +120,12 @@ Show loadAndSellTicket(Scanner s) {
     System.out.print("Enter the ticket number to sell: ");
     int targetTicketNum = s.nextInt();
     s.nextLine();
-    for (Ticket t : loadedShow.getTickets()) {
-        if (t.getTicketNumber() == targetTicketNum) {
-            if (t.isSold()) {
+    for (Ticket t : loadedShow.getTickets())
+    {
+        if (t.getTicketNumber() == targetTicketNum) 
+        {
+            if (t.isSold()) 
+            {
                 System.out.println("Ticket #" + targetTicketNum + " is already sold to " + t.getPurchaserName() + ".\n");
                 return loadedShow;
             }
@@ -124,7 +145,8 @@ Show loadAndSellTicket(Scanner s) {
     System.out.println("Ticket #" + targetTicketNum + " was not found in this show.\n");
     return loadedShow;
 }
-Show loadShowFile(Scanner s) {
+Show loadShowFile(Scanner s) 
+{
     System.out.print("Enter the exact name of the show to load: ");
     int sellable = 0;
     String showName = s.nextLine();
@@ -132,12 +154,14 @@ Show loadShowFile(Scanner s) {
     File file = new File(fileName);
 
 
-    if (!file.exists()) {
+    if (!file.exists()) 
+    {
         System.out.println("File '" + fileName + "' not found!\n");
         return null;
     }
 
-    try (Scanner fileScanner = new Scanner(file)) {
+    try (Scanner fileScanner = new Scanner(file)) 
+    {
         String[] showInfo = fileScanner.nextLine().split(",");
         String loadedName = showInfo[0];
         String loadedArtist = showInfo[1];
@@ -147,7 +171,8 @@ Show loadShowFile(Scanner s) {
         Show loadedShow = new Show(loadedName, loadedArtist, loadedVenue, totalTickets);
         loadedShow.clearTickets();
         int soldCount = 0;
-        while (fileScanner.hasNextLine()) {
+        while (fileScanner.hasNextLine()) 
+        {
             String[] tData = fileScanner.nextLine().split(",", -1);
             int tNum = Integer.parseInt(tData[0]);
             int sNum = Integer.parseInt(tData[1]);
@@ -171,7 +196,8 @@ Show loadShowFile(Scanner s) {
     }
 }
 
-void saveShowToFile(Show show) {
+void saveShowToFile(Show show) 
+{
     String fileName = show.getShowName().replaceAll("\\s+", "_") + ".txt";
     File showFile = new File(fileName);
 
@@ -192,7 +218,8 @@ void saveShowToFile(Show show) {
     }
 }
 
-Show option3(Scanner s, Show currentShow) {
+Show option3(Scanner s, Show currentShow)
+{
     if (currentShow == null) {
         System.out.println("No show currently loaded in memory.");
         currentShow = loadShowFile(s);
@@ -218,12 +245,13 @@ Show option3(Scanner s, Show currentShow) {
             currentShow.getNumberOfTickets(),
             currentShow.getNumberOfTickets() - soldCount);
     System.out.println("==========================================================================");
-
+    
     System.out.printf("%-12s | %-8s | %-10s | %-20s | %-18s%n",
             "Ticket #", "Seat #", "Status", "Owner", "Verification Code");
     System.out.println("--------------------------------------------------------------------------");
 
-    for (Ticket t : currentShow.getTickets()) {
+    for (Ticket t : currentShow.getTickets()) 
+    {
         String status = t.isSold() ? "SOLD" : "Available";
         String owner = t.isSold() ? t.getPurchaserName() : "---";
         String vCode = t.isSold() ? t.getVerificationCode() : "N/A";
